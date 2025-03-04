@@ -3,24 +3,60 @@
     x:Class="App2.MainWindow"
    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="App2"
-    Title="Serial Port WinUI Örneği"
-    >
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    
+    
     <Grid>
-        <StackPanel Margin="10">
-            <!-- COM port seçimi -->
-            <Button Content="COM Port Seçin:"></Button>
-            <ComboBox Name="comboBoxPorts" Width="200"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40,0"/>
+            </Grid.RowDefinitions>
+            <StackPanel
+                x:Name="TitleBar"
+             Grid.Row="0"
+             Margin="0,0,120,0"
+             Background="{ThemeResource AppBarBackgroundThemeBrush}"
+             Orientation="Horizontal">
+             <Image Source="/Assets/IMG-20241205-WA0001(1).jpg" />
+                <TextBlock
+                 Margin="10,0,0,0"
+                 VerticalAlignment="Center"
+                 Text="{x:Bind Title}"/>
+            </StackPanel>
+        </Grid>
+        <Grid Margin="0,40,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition  Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Background="#eeb425" Padding="10">
+            <StackPanel Margin="1,20,0,0">
+                    <!-- COM port seçimi -->
+                    <Rectangle Width="120" Height="120" RadiusX="60" RadiusY="60">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="Assets/Başlıksız (3).jpeg.png" Stretch="UniformToFill"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
 
-            <!-- Baud rate seçimi -->
-            <Button Content="Baud Rate Seçin:" Margin="0,10,0,0"> </Button>
-            <ComboBox Name="comboBoxBaudRates" Width="200"/>
+                    <TextBlock Foreground="Black" Text="COM Port Seçin:" Margin="0,50,0,0"></TextBlock>
+                    <ComboBox Name="comboBoxPorts" Width="200"/>
 
-            <!-- Port açma butonu -->
-            <Button Name="buttonOpenPort" Content="Portu Aç" Width="100" Margin="0,20,0,0" Click="buttonOpenPort_Click"/>
+                    <!-- Baud rate seçimi -->
+                    <TextBlock Foreground="Black" Text="Baud Rate Seçin:" Margin="0,10,0,0" ></TextBlock>
+                    <ComboBox  Name="comboBoxBaudRates" Width="200"/>
 
-            <!-- Durum bilgisi -->
-            <TextBlock Name="textBlockStatus" Margin="0,20,0,0"/>
-        </StackPanel>
+                    <!-- Port açma butonu -->
+                    <Button Name="buttonOpenPort" Content="Portu Aç" Width="100" Margin="0,20,0,0" Click="buttonOpenPort_Click"/>
+
+                    <!-- Durum bilgisi -->
+                    <TextBlock Name="textBlockStatus" Margin="0,11,0,0"/>
+            </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
+    
+    
 </Window>
