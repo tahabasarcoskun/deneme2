@@ -35,6 +35,9 @@ namespace App2
             public MainWindow()
             {
                 InitializeComponent();
+            Title = "TITAN ROCKET PROJECT";
+            ExtendsContentIntoTitleBar=true;
+            SetTitleBar(TitleBar);
                 // Sistemdeki COM portlarýný listele
                 string[] ports = SerialPort.GetPortNames();
                 comboBoxPorts.ItemsSource = ports;
