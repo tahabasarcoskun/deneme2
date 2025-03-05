@@ -14,10 +14,11 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using System.Net.Sockets;
 using System.IO.Ports;
-using System;
+using System.Threading;
 using System.Windows;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.UI.Dispatching;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -28,57 +29,107 @@ namespace App2
 
 
 
-        public partial class MainWindow : Window
+    public partial class MainWindow : Window
+    {
+
+        SerialPort serialPort;
+        private bool isPortOpen = false;
+        private bool _isPortOpen;
+        private readonly DispatcherQueue dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+
+        public MainWindow()
         {
-            SerialPort serialPort;
-
-            public MainWindow()
-            {
-                InitializeComponent();
+            InitializeComponent();
             Title = "TITAN ROCKET PROJECT";
-            ExtendsContentIntoTitleBar=true;
-            SetTitleBar(TitleBar);
-                // Sistemdeki COM portlarýný listele
-                string[] ports = SerialPort.GetPortNames();
-                comboBoxPorts.ItemsSource = ports;
-                if (ports.Length > 0)
-                    comboBoxPorts.SelectedIndex = 0;
-                else
-                    textBlockStatus.Text = "Açýk COM port bulunamadý.";
+            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(TitleBar);//üst barýn seçim kodu
 
-                // Yaygýn kullanýlan baud rate seçeneklerini ekle
-                int[] baudRates = { 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200 };
-                comboBoxBaudRates.ItemsSource = baudRates;
-                comboBoxBaudRates.SelectedItem = 9600;
+            string[] ports = SerialPort.GetPortNames();
+            comboBoxPorts.ItemsSource = ports;
+            if (ports.Length > 0)
+                comboBoxPorts.SelectedIndex = 0;
+            else
+                alici.Text = "Açýk COM port bulunamadý.";
+
+            int[] baudRates = { 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200 };
+            comboBoxBaudRates.ItemsSource = baudRates;
+            comboBoxBaudRates.SelectedItem = 9600;
+        }
+        //open tuþu kodu
+        private void buttonOpenPort_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (comboBoxPorts.SelectedItem == null)
+            {
+                alici.Text = "Lütfen bir COM port seçin.";
+                return;
+            }
+            if (comboBoxBaudRates.SelectedItem == null)
+            {
+                alici.Text = "Lütfen bir baud rate seçin.";
+                return;
             }
 
-            private void buttonOpenPort_Click(object sender, RoutedEventArgs e)
+            string portName = comboBoxPorts.SelectedItem.ToString();
+            int baudRate = Convert.ToInt32(comboBoxBaudRates.SelectedItem);
+
+            serialPort = new SerialPort(portName, baudRate);
+            serialPort.DataReceived += SerialPort_DataReceived;
+
+            try
             {
-                if (comboBoxPorts.SelectedItem == null)
-                {
-                    textBlockStatus.Text = "Lütfen bir COM port seçin.";
-                    return;
-                }
-                if (comboBoxBaudRates.SelectedItem == null)
-                {
-                    textBlockStatus.Text = "Lütfen bir baud rate seçin.";
-                    return;
-                }
+                serialPort.Open();
+                alici.Text = $"{portName} portu, {baudRate} baud ile açýldý.";
+                buttonOpenPort.IsEnabled = false;
+                buttonClosePort.IsEnabled = true;
+                isPortOpen = true;
 
-                string portName = comboBoxPorts.SelectedItem.ToString();
-                int baudRate = Convert.ToInt32(comboBoxBaudRates.SelectedItem);
-
-                // Seri portu belirtilen port ve baud rate ile yapýlandýr
-                serialPort = new SerialPort(portName, baudRate);
-                try
-                {
-                    serialPort.Open();
-                    textBlockStatus.Text = $"{portName} portu, {baudRate} baud ile açýldý.";
-                }
-                catch (Exception ex)
-                {
-                    textBlockStatus.Text = $"Port açýlýrken hata: {ex.Message}";
-                }
+            }
+            catch (Exception ex)
+            {
+                alici.Text = $"Port açýlýrken hata: {ex.Message}";
             }
         }
+        //close tuþu kodu
+        private async void buttonClosePort_Click(Object sender, RoutedEventArgs e)
+        {
+
+            if (isPortOpen = false)
+            {
+
+                try
+                {
+                    serialPort.Close();
+
+                    alici.Text = "Port kapandý";
+                    buttonClosePort.IsEnabled = false;
+                    buttonOpenPort.IsEnabled = true;
+                    isPortOpen = false;
+
+                }
+                catch
+                {
+                    alici.Text = "Port Kapatýlamadý Uygulamayý yeniden baþlatýnýz";
+
+                }
+            }
+            else
+            {
+                alici.Text = "Daha portu açmadýn nasýl kapatýcan";
+                return;
+            }
+
+
+        }
+        //serial porttan gelen kodu okuma kodu(deðiþik bir cümle oldu) 
+        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            string data = serialPort.ReadExisting();
+
+            dispatcherQueue.TryEnqueue(() =>
+            {
+                textBlockStatus.Text += "\nAlýnan veri: " + data;
+            });
+        }
     }
+}
