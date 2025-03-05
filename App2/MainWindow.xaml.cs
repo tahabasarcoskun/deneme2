@@ -13,12 +13,21 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using System.Net.Sockets;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.WinUI;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
+using SkiaSharp;
+using LiveCharts;
 using System.IO.Ports;
 using System.Threading;
+using System.Collections.Generic;
 using System.Windows;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
+using System.Reflection.Metadata;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -26,6 +35,15 @@ using Microsoft.UI.Dispatching;
 
 namespace App2
 {
+    public class ViewModel
+    {
+        public ISeries[] Series { get; set; } = new ISeries[]
+        {
+            new ColumnSeries<int>(new int[] { 3, 4, 2 }),
+            new ColumnSeries<int>(new int[] { 4, 2, 6 }),
+            new ColumnSeries<double, DiamondGeometry>(new double[] { 4, 3, 4 })
+        };
+    }
 
 
 
@@ -36,10 +54,14 @@ namespace App2
         private bool isPortOpen = false;
         private bool _isPortOpen;
         private readonly DispatcherQueue dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        
+       
 
         public MainWindow()
         {
             InitializeComponent();
+         
+
             Title = "TITAN ROCKET PROJECT";
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(TitleBar);//üst barýn seçim kodu
@@ -131,5 +153,9 @@ namespace App2
                 textBlockStatus.Text += "\nAlýnan veri: " + data;
             });
         }
+    }
+
+    public class ChartViewModel
+    {
     }
 }
