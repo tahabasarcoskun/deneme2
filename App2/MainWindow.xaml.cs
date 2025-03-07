@@ -51,8 +51,8 @@ namespace App2
     {
 
         SerialPort serialPort;
-        private bool isPortOpen = false;
-        private bool _isPortOpen;
+        private bool isPortOpen=false;
+        
         private readonly DispatcherQueue dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         
        
@@ -97,28 +97,40 @@ namespace App2
 
             serialPort = new SerialPort(portName, baudRate);
             serialPort.DataReceived += SerialPort_DataReceived;
-
-            try
+            if (isPortOpen)
             {
-                serialPort.Open();
-                alici.Text = $"{portName} portu, {baudRate} baud ile açýldý.";
-                buttonOpenPort.IsEnabled = false;
-                buttonClosePort.IsEnabled = true;
-                isPortOpen = true;
+                try
+                {
+                    serialPort.Open();
+                    alici.Text = $"{portName} portu, {baudRate} baud ile açýldý.";
+                    buttonOpenPort.IsEnabled = false;
+                    buttonClosePort.IsEnabled = true;
+                    isPortOpen = true;
+
+
+                }
+                catch (Exception ex)
+                {
+                    alici.Text = $"Port açýlýrken hata: {ex.Message}";
+                }
 
             }
-            catch (Exception ex)
+            else
             {
-                alici.Text = $"Port açýlýrken hata: {ex.Message}";
+                alici.Text = "Port zaten açýk.";
             }
         }
         //close tuþu kodu
         private async void buttonClosePort_Click(Object sender, RoutedEventArgs e)
         {
 
-            if (isPortOpen = false)
+            if (serialPort==null)
             {
-
+                alici.Text = "Daha portu açmadýn amk";
+              
+            }
+            else
+            {
                 try
                 {
                     serialPort.Close();
@@ -128,6 +140,7 @@ namespace App2
                     buttonOpenPort.IsEnabled = true;
                     isPortOpen = false;
 
+
                 }
                 catch
                 {
@@ -135,11 +148,8 @@ namespace App2
 
                 }
             }
-            else
-            {
-                alici.Text = "Daha portu açmadýn nasýl kapatýcan";
-                return;
-            }
+            
+            
 
 
         }
@@ -155,7 +165,5 @@ namespace App2
         }
     }
 
-    public class ChartViewModel
-    {
-    }
+    
 }

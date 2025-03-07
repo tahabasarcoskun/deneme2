@@ -72,13 +72,14 @@
             </StackPanel>
             
         </Grid>
-        <Grid Margin="">
+        <Grid Margin="300,50,600,200">
         <Grid.DataContext>
             <local:ViewModel />
         </Grid.DataContext>
 
         <lvc:CartesianChart
-            Series="{Binding Series}">
+            Series="{Binding Series}"
+            >
         </lvc:CartesianChart>
     </Grid>
     </Grid>
