@@ -97,7 +97,7 @@ namespace App2
 
             serialPort = new SerialPort(portName, baudRate);
             serialPort.DataReceived += SerialPort_DataReceived;
-            if (isPortOpen)
+            if (isPortOpen==false)
             {
                 try
                 {

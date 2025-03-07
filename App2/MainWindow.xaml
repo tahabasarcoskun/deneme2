@@ -31,7 +31,7 @@
                  Text="{x:Bind Title}"/>
             </StackPanel>
         </Grid>
-        <Grid Margin="0,40,0,0">
+        <Grid Margin="0,40,0,0" Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition  Width="*"/>
@@ -79,6 +79,7 @@
 
         <lvc:CartesianChart
             Series="{Binding Series}"
+            
             >
         </lvc:CartesianChart>
     </Grid>
