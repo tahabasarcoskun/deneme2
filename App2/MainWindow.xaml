@@ -3,8 +3,10 @@
     x:Class="App2.MainWindow"
    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:local="using:App2"
     xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
@@ -14,9 +16,10 @@
 
 
     <Grid>
+        
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40,0"/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
             <StackPanel
                 x:Name="TitleBar"
@@ -31,13 +34,13 @@
                  Text="{x:Bind Title}"/>
             </StackPanel>
         </Grid>
-        <Grid Margin="0,40,0,0" Background="Transparent">
+        <Grid Margin="0,30,0,0" Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition  Width="*"/>
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" Background="#eeb425" Padding="10">
-                <StackPanel Margin="1,20,0,0">
+                <StackPanel Margin="1,10,0,0">
                  
                     <!--port seçim kısmı -->
                     <Rectangle Width="120" Height="120" RadiusX="60" RadiusY="60">
@@ -47,11 +50,11 @@
                     </Rectangle>
 
                     <TextBlock Foreground="Black" Text="COM Port Seçin:" Margin="0,50,0,0"></TextBlock>
-                    <ComboBox Name="comboBoxPorts" Width="200"/>
+                    <ComboBox Name="comboBoxPorts" Width="180"/>
 
                     <!-- baud rate -->
                     <TextBlock Foreground="Black" Text="Baud Rate Seçin:" Margin="0,10,0,0" ></TextBlock>
-                    <ComboBox  Name="comboBoxBaudRates" Width="200"/>
+                    <ComboBox  Name="comboBoxBaudRates" Width="180"/>
 
                     <!-- port açma-->
                     <Button Name="buttonOpenPort" Content="Portu Aç" Width="100" Margin="0,20,0,0" Click="buttonOpenPort_Click"/>
@@ -65,17 +68,31 @@
 
 
         </Grid>
-        
-        <Grid Margin="300,50,600,200">
-        <Grid.DataContext>
-            <local:ViewModel />
-        </Grid.DataContext>
+        <ScrollView Margin="200,30,0,0">
+            <Grid>
+                <Grid.DataContext>
+                    <local:ViewModel />
+                </Grid.DataContext>
 
-            <lvc:CartesianChart x:Name="chartControl"
-                     Series="{Binding Series, Mode=OneWay}"
-                     XAxes="{Binding XAxes, Mode=OneWay}"
-                     YAxes="{Binding YAxes, Mode=OneWay}" />
+                <lvc:CartesianChart x:Name="chartControl"
+             Series="{Binding Series, Mode=OneWay}"
+             XAxes="{Binding XAxes, Mode=OneWay}"
+             YAxes="{Binding YAxes, Mode=OneWay}" />
+                
 
+            </Grid>
+        </ScrollView>
+            
+            
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <muxc:InfoBar Margin="10">
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:StackedNotificationsBehavior x:Name="NotificationQueue" />
+                </interactivity:Interaction.Behaviors>
+            </muxc:InfoBar>
         </Grid>
     </Grid>
 </Window>

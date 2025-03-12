@@ -5,9 +5,13 @@ using System.Globalization;
 using System.IO.Ports;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using MUXC = Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls;
 using CommunityToolkit.WinUI.Controls;
 using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.ApplicationModel.Core;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
@@ -16,6 +20,7 @@ using SkiaSharp;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml.Media;
+using CommunityToolkit.WinUI.Behaviors;
 
 namespace App2
 {
@@ -125,11 +130,12 @@ namespace App2
         public MainWindow()
         {
             InitializeComponent();
+            
             if (MicaController.IsSupported())
             {
                 this.SystemBackdrop = new MicaBackdrop()
                 {
-                    Kind = MicaKind.Base
+                    Kind = MicaKind.BaseAlt
                 };
             }
             else if (DesktopAcrylicController.IsSupported())
@@ -152,7 +158,7 @@ namespace App2
             // Baud rate seçimleri
             int[] baudRates = { 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200 };
             comboBoxBaudRates.ItemsSource = baudRates;
-            comboBoxBaudRates.SelectedItem = 9600;
+            
 
             // ViewModel oluþturup chart kontrolüne DataContext atamasý yapýyoruz.
             chartViewModel = new ViewModel();
@@ -162,6 +168,19 @@ namespace App2
         // Port açma butonunun click metodu
         private void buttonOpenPort_Click(object sender, RoutedEventArgs e)
         {
+            if (comboBoxBaudRates.SelectedItem == null)
+            {
+                var notification = new Notification
+                {
+                    Title = "Baud Rate Hatasý!!",
+                    Message = "Baud rate seçilmedi!!",
+                    Severity = MUXC.InfoBarSeverity.Informational,
+                };
+                NotificationQueue.Show(notification);
+            }
+
+
+
             if (comboBoxPorts.SelectedItem == null)
             {
                 alici.Text = "Lütfen bir COM port seçin.";
